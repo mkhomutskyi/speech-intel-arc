@@ -52,7 +52,10 @@ needed only during download and image build; normal inference is configured offl
 
 ## Build, select, start
 
-Copy .env.example and edit actual nodes/group IDs. `XPU_DEVICE=xpu:0` and
+Copy .env.example and edit actual nodes and the render-node group ID. The
+reference image runs as root inside Docker and adds the render group once;
+card and render nodes may have the same group ID in an LXC. Non-root execution
+needs its own device-permission validation. `XPU_DEVICE=xpu:0` and
 `OV_DEVICE=GPU` are defaults, not stable hardware identities. The expected-name
 check defaults to Arc and can be set to B50 for a stricter local check.
 Use FP32 first; BF16 is optional and must be checked with your utterances.

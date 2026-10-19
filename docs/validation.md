@@ -1,5 +1,81 @@
 # Portable image validation — October19,2026
 
+## Fresh download and Compose acceptance
+
+A fresh public checkout, empty model directory and the published downloader
+were exercised on the B50. Every required model file downloaded and passed
+the script's upstream size/LFS-hash checks; the generated manifest recorded
+SHA256s. The published Dockerfile built, and the Compose project started both
+workers healthy with read-only model mounts and a private test bearer key.
+The corrected Compose configuration also passed with equal card/render GIDs,
+as found on the test LXC. Production workloads were kept running during these
+candidate tests; later a separate speech-only production patch was validated.
+
+| Check | Observed result |
+|---|---|
+|Published smoke client|TTS/STT round trip passed|
+|WAV / PCM / MP3|All returned valid responses; WAV mono, 24 kHz, signed 16-bit|
+|Long TTS|63.9 seconds of audio generated in 3.260 seconds wall time|
+|Empty text, wrong voice/format, invalid speed|422|
+|Missing/wrong bearer key|401|
+|Invalid language / upload over 25 MiB|422 / 413|
+|Invalid audio|Initially exposed a proxy bug (502); corrected image retest returned 400|
+|Simultaneous TTS and STT, three pairs|All 200; TTS 0.270–0.271 s, STT 0.205–0.208 s|
+|Restart both candidate services|TTS/STT recovered; model manifest unchanged|
+|Browser-style input|48 kHz stereo WebM/Opus decoded; Ukrainian transcript returned|
+|Long recognition|63.9-second synthetic clip transcribed in 1.062 seconds|
+|Over-duration input|300.1-second WAV rejected with 413 before inference|
+|Official native OpenVINO Kokoro on B50|Generated audio without importing Torch; Whisper recognized its expected text|
+
+### Human recordings
+
+Source: [Google FLEURS](https://huggingface.co/datasets/google/fleurs), test
+split, revision `70bb2e84b976b7e960aa89f1c648e09c59f894dd`. The first two
+archive members matching test.tsv labels were selected per language, without
+cherry-picking. The dataset preview endpoint failed, so original TSV/audio
+archives were used. Each clip was tested twice, with blank automatic detection
+and an explicit en/ru/uk parameter. All twelve requests returned transcripts;
+auto and explicit output matched for these fixtures.
+
+| Language | Clips | Total reference words | Word edits | WER | Auto wall time per clip |
+|---|---:|---:|---:|---:|---|
+|English|2|40|3|7.50%|0.154–0.163 s|
+|Russian|2|35|0|0.00%|0.184–0.258 s|
+|Ukrainian|2|24|1|4.17%|0.164–0.199 s|
+
+WER uses Unicode NFKC, case folding, punctuation replaced by spaces,
+whitespace word splitting and Levenshtein edits, divided by reference words.
+No number verbalization or additional language-specific normalization was
+applied. English included the reference's singular "year" versus recognized
+"years" and a German word; Ukrainian had one differing word. **Two clips per
+language are a functional check, not a representative accuracy benchmark.**
+Audio duration ranged 7.08–16.92 seconds. Timings include local HTTP upload,
+decoding and inference with resident models; no browser or external proxy.
+
+Sanitized per-call results, recording IDs/hashes, runtime pins and the initial
+failure/retest are in [validation.json](../benchmarks/2026-10-19/validation.json).
+Recordings are not redistributed here. FLEURS attribution/license remains with
+the upstream dataset. The [runtime investigation](runtime-options.md) gives the
+official candidate model revision, reproducible probe and migration limits.
+
+The live reference service separately passed omitted-language English/Russian/
+Ukrainian requests after its English default was removed. Its PyTorch/OpenVINO
+engines were retained, and the prior image was kept for rollback.
+
+### Remaining boundaries
+
+OpenWebUI read-aloud also passed using a normal signed-in owner browser session:
+its audio element reached readyState4, played to3.96s of4.512s, with no media
+error. This checks browser delivery/playback state, not human listening quality.
+
+Browser microphone capture, subjective listening, family-user controls,
+simultaneous music/SFX/image/LLM contention,
+other Arc cards and an NPU deployment remain outside these checks. The
+OpenVINO-only probe is not a complete replacement API. Authenticated OpenWebUI
+microphone acceptance still needs the owner to speak. No broader guarantee is inferred.
+
+## Earlier disposable-image smoke
+
 The Dockerfile in this repository built successfully on a Linux Docker host
 using its published dependency sources. The Kokoro source-asserted alignment
 workaround applied and `uv pip check` passed. Observed Python3.12.15,
@@ -28,13 +104,10 @@ Recognition wall time was0.315seconds. These are single smoke observations,
 not repeated performance measurements or a new hardware comparison.
 
 CI additionally checks Python/JSON/YAML, local documentation links, credential
-and personal-email patterns in published files/history, lint and nine pure
-language/authentication tests. CI has no GPU and cannot reproduce hardware checks.
+and personal-email patterns in published files/history, lint, request helper
+tests and an equal-GID Compose regression. CI has no GPU and cannot reproduce
+hardware checks.
 
-The image/application was exercised with explicit disposable Docker commands;
-the Compose file is a portable deployment example, not a separately exercised
-new host installation. Both Compose examples were rendered/validated separately.
-The downloader's pinned sources are the measured model revisions; this check
-reused existing weights and did not redownload them. Natural-speaker accuracy,
-Russian/Ukrainian recordings, browser microphone/playback, concurrent workloads
-and other Arc cards remain unvalidated here. No quality guarantee is inferred.
+That earlier image smoke used explicit Docker commands and reused weights.
+The fresh-download/Compose and natural-recording checks above supersede those
+earlier packaging gaps. Neither run validates other hardware or subjective quality.

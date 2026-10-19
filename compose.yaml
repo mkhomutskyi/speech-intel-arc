@@ -7,7 +7,7 @@ services:
     devices:
       - "${CARD_DEVICE:?Set CARD_DEVICE}:${CARD_DEVICE}"
       - "${RENDER_DEVICE:?Set RENDER_DEVICE}:${RENDER_DEVICE}"
-    group_add: ["${VIDEO_GID:?Set VIDEO_GID}", "${RENDER_GID:?Set RENDER_GID}"]
+    group_add: ["${RENDER_GID:?Set RENDER_GID}"]
     volumes: ["${SPEECH_DATA:-./data}/models:/models:ro", "stt-cache:/root/.cache"]
     environment:
       OV_DEVICE: "${OV_DEVICE:-GPU}"
@@ -29,7 +29,7 @@ services:
     devices:
       - "${CARD_DEVICE:?Set CARD_DEVICE}:${CARD_DEVICE}"
       - "${RENDER_DEVICE:?Set RENDER_DEVICE}:${RENDER_DEVICE}"
-    group_add: ["${VIDEO_GID:?Set VIDEO_GID}", "${RENDER_GID:?Set RENDER_GID}"]
+    group_add: ["${RENDER_GID:?Set RENDER_GID}"]
     volumes: ["${SPEECH_DATA:-./data}/models:/models:ro", "tts-cache:/root/.cache"]
     environment:
       HF_HOME: /models/huggingface

@@ -1,0 +1,444 @@
+{
+  "date": "2026-10-19",
+  "hardware": "Intel Arc Pro B50 16GB",
+  "scope": "Fresh model download and disposable Compose validation; these are smoke observations, not a cross-GPU benchmark",
+  "runtime": {
+    "torch": "2.14.0+xpu",
+    "openvino": "2026.5.0-23482-e1fca238e94",
+    "python": "3.12.15",
+    "kokoro": "0.9.4",
+    "misaki": "0.9.4"
+  },
+  "tests": [
+    {
+      "name": "models_auth_False",
+      "status": 401,
+      "expected": 401,
+      "pass": true
+    },
+    {
+      "name": "models_auth_True",
+      "status": 200,
+      "expected": 200,
+      "pass": true
+    },
+    {
+      "name": "tts_wav",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "wall_seconds": 5.254222858013236,
+      "bytes": 213644,
+      "timing_headers": {
+        "x-synthesis-seconds": "5.252201826995588",
+        "x-audio-seconds": "4.45"
+      }
+    },
+    {
+      "name": "tts_pcm",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "wall_seconds": 0.11433859400858637,
+      "bytes": 213600,
+      "timing_headers": {
+        "x-synthesis-seconds": "0.11203670600662008",
+        "x-audio-seconds": "4.45"
+      }
+    },
+    {
+      "name": "tts_mp3",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "wall_seconds": 0.24749584699748084,
+      "bytes": 18092,
+      "timing_headers": {
+        "x-synthesis-seconds": "0.1093706760002533",
+        "x-audio-seconds": "4.45"
+      }
+    },
+    {
+      "name": "invalid_tts_empty",
+      "status": 422,
+      "expected": 422,
+      "pass": true
+    },
+    {
+      "name": "invalid_tts_voice",
+      "status": 422,
+      "expected": 422,
+      "pass": true
+    },
+    {
+      "name": "invalid_tts_format",
+      "status": 422,
+      "expected": 422,
+      "pass": true
+    },
+    {
+      "name": "invalid_tts_speed",
+      "status": 422,
+      "expected": 422,
+      "pass": true
+    },
+    {
+      "name": "long_tts",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "wall_seconds": 3.2596391859988216,
+      "timing_headers": {
+        "x-synthesis-seconds": "3.255388170990045",
+        "x-audio-seconds": "63.9"
+      }
+    },
+    {
+      "name": "synthetic_auto",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "wall_seconds": 0.3523426720057614,
+      "response": "{\"text\":\"The living room lights are on. I have set a timer for 5 minutes.\"}"
+    },
+    {
+      "name": "invalid_language",
+      "status": 422,
+      "expected": 422,
+      "pass": true,
+      "wall_seconds": 0.002114873001119122,
+      "response": "{\"detail\":\"Use a two/three-letter language code or empty for automatic detection\"}"
+    },
+    {
+      "name": "invalid_audio",
+      "status": 502,
+      "expected": 400,
+      "pass": false,
+      "wall_seconds": 0.0031731850031064823,
+      "response": "{\"detail\":\"Intel STT backend failed\"}"
+    },
+    {
+      "name": "oversized",
+      "status": 413,
+      "expected": 413,
+      "pass": true,
+      "wall_seconds": 0.03891047200886533,
+      "response": "{\"detail\":\"Audio limit25MiB\"}"
+    },
+    {
+      "name": "tts_after_restart",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "wall_seconds": 3.150166655992507
+    },
+    {
+      "name": "stt_after_restart",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "response": "{\"text\":\"The living room lights are on. I have set a timer for 5 minutes.\"}"
+    }
+  ],
+  "correction_retest": [
+    {
+      "name": "invalid_audio",
+      "status": 400,
+      "expected": 400,
+      "pass": true,
+      "response": "{\"detail\":\"Invalid audio or transcription request\"}"
+    },
+    {
+      "name": "synthetic_auto",
+      "status": 200,
+      "expected": 200,
+      "pass": true,
+      "response": "{\"text\":\"The living room lights are on. I have set a timer for 5 minutes.\"}"
+    },
+    {
+      "name": "invalid_language",
+      "status": 422,
+      "expected": 422,
+      "pass": true,
+      "response": "{\"detail\":\"Use a two/three-letter language code or empty for automatic detection\"}"
+    },
+    {
+      "name": "wrong_key",
+      "status": 401,
+      "pass": true
+    }
+  ],
+  "wav_format": {
+    "channels": 1,
+    "rate": 24000,
+    "width": 2,
+    "seconds": 4.45
+  },
+  "dataset": {
+    "dataset": "google/fleurs",
+    "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+    "split": "test",
+    "selection": "First two archive members with matching test.tsv labels per language; no cherry-picking"
+  },
+  "human_stt": [
+    {
+      "language": "en_us",
+      "language_parameter": "auto",
+      "id": "1904",
+      "audio_seconds": 10.56,
+      "wall_seconds": 0.16275245499855373,
+      "real_time_factor": 0.015412164299105467,
+      "status": 200,
+      "word_edits": 1,
+      "reference_words": 19,
+      "wer": 0.05263157894736842,
+      "sha256": "33aca50159ec2e3cbcc894eb26faa916d6badb1b49fb75994973561540a7f012"
+    },
+    {
+      "language": "en_us",
+      "language_parameter": "en",
+      "id": "1904",
+      "audio_seconds": 10.56,
+      "wall_seconds": 0.15132183099922258,
+      "real_time_factor": 0.01432971884462335,
+      "status": 200,
+      "word_edits": 1,
+      "reference_words": 19,
+      "wer": 0.05263157894736842,
+      "sha256": "33aca50159ec2e3cbcc894eb26faa916d6badb1b49fb75994973561540a7f012"
+    },
+    {
+      "language": "en_us",
+      "language_parameter": "auto",
+      "id": "1675",
+      "audio_seconds": 8.76,
+      "wall_seconds": 0.15400323699577712,
+      "real_time_factor": 0.017580278195864968,
+      "status": 200,
+      "word_edits": 2,
+      "reference_words": 21,
+      "wer": 0.09523809523809523,
+      "sha256": "7603cae3294309ef70d234180cefccc3b13865ee525262228a636069b9b62841"
+    },
+    {
+      "language": "en_us",
+      "language_parameter": "en",
+      "id": "1675",
+      "audio_seconds": 8.76,
+      "wall_seconds": 0.14858676800213289,
+      "real_time_factor": 0.016961959817595077,
+      "status": 200,
+      "word_edits": 2,
+      "reference_words": 21,
+      "wer": 0.09523809523809523,
+      "sha256": "7603cae3294309ef70d234180cefccc3b13865ee525262228a636069b9b62841"
+    },
+    {
+      "language": "ru_ru",
+      "language_parameter": "auto",
+      "id": "1819",
+      "audio_seconds": 16.92,
+      "wall_seconds": 0.2581797810125863,
+      "real_time_factor": 0.01525885230570841,
+      "status": 200,
+      "word_edits": 0,
+      "reference_words": 21,
+      "wer": 0.0,
+      "sha256": "08d7f2cd51bb0de6d00655368d9926888930a8a2482ee48153c1b099dcc2a7e4"
+    },
+    {
+      "language": "ru_ru",
+      "language_parameter": "ru",
+      "id": "1819",
+      "audio_seconds": 16.92,
+      "wall_seconds": 0.2474665699992329,
+      "real_time_factor": 0.014625683806101233,
+      "status": 200,
+      "word_edits": 0,
+      "reference_words": 21,
+      "wer": 0.0,
+      "sha256": "08d7f2cd51bb0de6d00655368d9926888930a8a2482ee48153c1b099dcc2a7e4"
+    },
+    {
+      "language": "ru_ru",
+      "language_parameter": "auto",
+      "id": "1781",
+      "audio_seconds": 11.52,
+      "wall_seconds": 0.1838781729893526,
+      "real_time_factor": 0.015961646960881305,
+      "status": 200,
+      "word_edits": 0,
+      "reference_words": 14,
+      "wer": 0.0,
+      "sha256": "81673ad2f0eb6a463e13fd9d5a442d1469e745f9a67565a3b9d20fbff395599a"
+    },
+    {
+      "language": "ru_ru",
+      "language_parameter": "ru",
+      "id": "1781",
+      "audio_seconds": 11.52,
+      "wall_seconds": 0.17436153900052886,
+      "real_time_factor": 0.015135550260462576,
+      "status": 200,
+      "word_edits": 0,
+      "reference_words": 14,
+      "wer": 0.0,
+      "sha256": "81673ad2f0eb6a463e13fd9d5a442d1469e745f9a67565a3b9d20fbff395599a"
+    },
+    {
+      "language": "uk_ua",
+      "language_parameter": "auto",
+      "id": "1982",
+      "audio_seconds": 7.38,
+      "wall_seconds": 0.19899475999409333,
+      "real_time_factor": 0.026964059619795845,
+      "status": 200,
+      "word_edits": 0,
+      "reference_words": 14,
+      "wer": 0.0,
+      "sha256": "3fd525aa0804a05dbe27298c3ac15455a3ac6d16d4cdee572dd54b9a26c36535"
+    },
+    {
+      "language": "uk_ua",
+      "language_parameter": "uk",
+      "id": "1982",
+      "audio_seconds": 7.38,
+      "wall_seconds": 0.19771598000079393,
+      "real_time_factor": 0.02679078319793956,
+      "status": 200,
+      "word_edits": 0,
+      "reference_words": 14,
+      "wer": 0.0,
+      "sha256": "3fd525aa0804a05dbe27298c3ac15455a3ac6d16d4cdee572dd54b9a26c36535"
+    },
+    {
+      "language": "uk_ua",
+      "language_parameter": "auto",
+      "id": "1941",
+      "audio_seconds": 7.08,
+      "wall_seconds": 0.16408947799936868,
+      "real_time_factor": 0.023176479943413656,
+      "status": 200,
+      "word_edits": 1,
+      "reference_words": 10,
+      "wer": 0.1,
+      "sha256": "20febf9e924690474134ba20a99bb53c1d8e558b70ea685ab7a22c050f77831f"
+    },
+    {
+      "language": "uk_ua",
+      "language_parameter": "uk",
+      "id": "1941",
+      "audio_seconds": 7.08,
+      "wall_seconds": 0.1570254589896649,
+      "real_time_factor": 0.022178737145432895,
+      "status": 200,
+      "word_edits": 1,
+      "reference_words": 10,
+      "wer": 0.1,
+      "sha256": "20febf9e924690474134ba20a99bb53c1d8e558b70ea685ab7a22c050f77831f"
+    }
+  ],
+  "concurrent_speech": [
+    {
+      "tts_status": 200,
+      "tts_wall_seconds": 0.2701128800108563,
+      "stt_status": 200,
+      "stt_wall_seconds": 0.2055916840035934
+    },
+    {
+      "tts_status": 200,
+      "tts_wall_seconds": 0.2710106669983361,
+      "stt_status": 200,
+      "stt_wall_seconds": 0.20782479899935424
+    },
+    {
+      "tts_status": 200,
+      "tts_wall_seconds": 0.2712219399982132,
+      "stt_status": 200,
+      "stt_wall_seconds": 0.20506615200429223
+    }
+  ],
+  "model_manifest_unchanged_after_restart": true,
+  "openvino_only_tts": {
+    "device": "Intel(R) Arc(TM) Pro B50 Graphics (dGPU)",
+    "openvino": "2026.5.0-23482-e1fca238e94",
+    "torch_imported": false,
+    "compile_seconds": 12.179613840999082,
+    "text": "The living room lights are on. I have set a timer for five minutes.",
+    "voice": "af_sky",
+    "calls": [
+      {
+        "wall_seconds": 6.677406033995794,
+        "audio_seconds": 4.425,
+        "real_time_factor": 1.5090183127674113,
+        "rms": 0.03763657063245773
+      },
+      {
+        "wall_seconds": 1.7564349140011473,
+        "audio_seconds": 4.425,
+        "real_time_factor": 0.3969344438420672,
+        "rms": 0.03763730823993683
+      },
+      {
+        "wall_seconds": 0.40199905600456987,
+        "audio_seconds": 4.425,
+        "real_time_factor": 0.09084724429481805,
+        "rms": 0.03763730823993683
+      },
+      {
+        "wall_seconds": 0.2700125190021936,
+        "audio_seconds": 4.425,
+        "real_time_factor": 0.061019778305580474,
+        "rms": 0.03763730823993683
+      },
+      {
+        "wall_seconds": 0.36424969500512816,
+        "audio_seconds": 4.425,
+        "real_time_factor": 0.08231631525539619,
+        "rms": 0.03763730823993683
+      }
+    ]
+  },
+  "limits": [
+    "Two human clips per language only",
+    "No simultaneous music/image/LLM contention test",
+    "No other Arc card or NPU validation",
+    "OpenVINO-only TTS is a probe, not the default API",
+    "Physical microphone remains owner-assisted; read-aloud browser playback state passed"
+  ],
+  "extra_format_checks": {
+    "decode_wav": {
+      "codec_name": "pcm_s16le",
+      "sample_rate": "24000",
+      "channels": 1
+    },
+    "decode_mp3": {
+      "codec_name": "mp3",
+      "sample_rate": "24000",
+      "channels": 1
+    },
+    "webm_opus_stereo_48k": {
+      "status": 200,
+      "response": "{\"text\":\"Жінки усім подорожнім жінкам радять казати, що вони заміжні, незалежно від справжнього сімейного стану.\"}",
+      "wall_seconds": 0.22781103001034353
+    },
+    "over_five_minutes": {
+      "duration_seconds": 300.1,
+      "bytes": 9603244,
+      "status": 413
+    },
+    "long_stt": {
+      "status": 200,
+      "wall_seconds": 1.0615318259951891
+    }
+  },
+  "browser_read_aloud": {
+    "normal_sign_in": true,
+    "paused": false,
+    "ready_state": 4,
+    "duration_seconds": 4.512,
+    "observed_current_time_seconds": 3.960508,
+    "media_error": null,
+    "human_listening_tested": false
+  }
+}

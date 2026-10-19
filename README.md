@@ -12,6 +12,7 @@ CUDA Speaches fork and not an LLM runner.
 |---|---|
 | [Setup guide](docs/setup.md) | Host prerequisites, exact pins, model preparation and startup |
 | [Measurements](docs/measurements.md) | October18 results, cold/warm distinctions and limits |
+| [Runtime options](docs/runtime-options.md) | Custom API versus Speaches; tested OpenVINO-only TTS candidate |
 | [OpenWebUI integration](docs/openwebui.md) | TTS/STT URLs, voices, language behavior and HTTPS |
 | [Troubleshooting](docs/troubleshooting.md) | Device selection, alignment workaround, language and memory |
 
@@ -25,7 +26,7 @@ your exact GPU device nodes and ownership before editing the example.
 git clone https://github.com/mkhomutskyi/speech-intel-arc.git
 cd speech-intel-arc
 cp .env.example .env
-# Set actual CARD_DEVICE, RENDER_DEVICE, group IDs and device selectors.
+# Set actual CARD_DEVICE, RENDER_DEVICE, RENDER_GID and device selectors.
 python3 scripts/download_models.py
 docker compose config --quiet
 docker compose build stt
@@ -49,8 +50,11 @@ detection. See the setup guide for the separate clean-package validation status.
 The [new image passed isolated B50 TTS/STT acceptance](docs/validation.md). It does not silently modify an existing speech deployment.
 
 The enabled TTS voice is **English af_sky**; Russian/Ukrainian TTS is not claimed.
-Whisper is multilingual, but real Russian/Ukrainian microphone acceptance is
-still required. Synthetic round trips cannot establish accent/noise quality.
+Whisper passed six natural-speaker recordings across English, Russian and
+Ukrainian, with both automatic detection and explicit language selection.
+See the [validation record](docs/validation.md) for errors and sample limits.
+Real microphone acceptance is still required; six clips cannot establish
+general accent/noise quality.
 Models stay loaded in their worker processes for low latency; concurrent image,
 LLM and audio-generation jobs can contend for the same GPU.
 

@@ -102,13 +102,22 @@ def transcribe(
     blob = file.file.read(MAX_AUDIO_BYTES + 1)
     if len(blob) > MAX_AUDIO_BYTES:
         raise HTTPException(413, "Audio limit25MiB")
-    response = requests.post(
-        os.environ["STT_URL"] + "/v1/audio/transcriptions",
-        files={"file": (file.filename, blob, file.content_type)},
-        data={"language": language, "response_format": "json"},
-        timeout=180,
-    )
+    try:
+        response = requests.post(
+            os.environ["STT_URL"] + "/v1/audio/transcriptions",
+            files={"file": (file.filename, blob, file.content_type)},
+            data={"language": language, "response_format": "json"},
+            timeout=180,
+        )
+    except requests.Timeout:
+        raise HTTPException(504, "Intel STT backend timed out")
+    except requests.RequestException:
+        raise HTTPException(502, "Intel STT backend unavailable")
     if not response.ok:
+        if response.status_code in (400, 413, 422):
+            raise HTTPException(
+                response.status_code, "Invalid audio or transcription request"
+            )
         raise HTTPException(502, "Intel STT backend failed")
     return response.json()
 
@@ -182,4 +191,3 @@ def speech(body: Speech):
         check=True,
     )
     return Response(encoded.stdout, media_type="audio/mpeg", headers=headers)
-

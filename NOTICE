@@ -1,0 +1,11 @@
+Speech Intel Arc reference setup
+Copyright 2026 mkhomutskyi
+
+Original glue code, recipes and documentation: Apache License2.0.
+Kokoro and Misaki: hexgrad projects; upstream licenses retained, not vendored.
+Whisper model: OpenAI; published OpenVINO export: OpenVINO project. Model
+licenses remain with their publishers; weights are not distributed here.
+PyTorch, OpenVINO/GenAI/Tokenizers, FastAPI, Uvicorn, NumPy, PyAV, FFmpeg,
+espeak-ng, spaCy and the English language model retain upstream licenses.
+The Dockerfile installs them from their respective distribution sources.
+

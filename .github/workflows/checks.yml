@@ -1,0 +1,18 @@
+name: checks
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  public-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.7.4 pytest==8.4.2 pyyaml==6.0.2
+      - run: python scripts/check_public_secrets.py --history
+      - run: python scripts/check_repository.py
+      - run: ruff check .
+      - run: pytest -q
+      - run: cp .env.example .env && docker compose config --quiet

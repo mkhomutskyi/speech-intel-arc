@@ -72,3 +72,6 @@ retain their licenses; [NOTICE](NOTICE) identifies sources. Read [SECURITY.md](S
 Separate projects: [Illama2](https://github.com/mkhomutskyi/illama2) for LLMs,
 [ComfyUI on Arc](https://github.com/mkhomutskyi/comfyui-intel-arc) for images.
 
+[OpenWebUI integration guide](https://github.com/mkhomutskyi/openwebui-local-ai-stack)
+connects chat, images and speech with persistent data and shared family access.
+

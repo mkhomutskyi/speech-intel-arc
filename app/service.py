@@ -70,7 +70,7 @@ def health():
     return {
         "status": "ok",
         "tts_device": str(model.device),
-        "tts_device_name": torch.xpu.get_device_name(),
+        "tts_device_name": torch.xpu.get_device_name(device),
         "stt_url": os.environ["STT_URL"],
         "precision": AMP,
         "torch": torch.__version__,
@@ -137,7 +137,7 @@ def speech(body: Speech):
             r.audio.float().numpy()
             for r in pipe(body.input, voice=body.voice, speed=body.speed)
         ]
-        torch.xpu.synchronize()
+        torch.xpu.synchronize(device)
     if not parts:
         raise HTTPException(422, "No pronounceable text")
     audio = np.concatenate(parts)
@@ -182,3 +182,4 @@ def speech(body: Speech):
         check=True,
     )
     return Response(encoded.stdout, media_type="audio/mpeg", headers=headers)
+

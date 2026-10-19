@@ -404,7 +404,7 @@
     "No simultaneous music/image/LLM contention test",
     "No other Arc card or NPU validation",
     "OpenVINO-only TTS is a probe, not the default API",
-    "Physical microphone remains owner-assisted; read-aloud browser playback state passed"
+    "One owner-assisted English microphone/audible playback check; physical Russian/Ukrainian trials and detailed quality evaluation remain"
   ],
   "extra_format_checks": {
     "decode_wav": {
@@ -439,6 +439,17 @@
     "duration_seconds": 4.512,
     "observed_current_time_seconds": 3.960508,
     "media_error": null,
-    "human_listening_tested": false
+    "human_listening_tested": true,
+    "owner_report": "Owner confirmed hearing the generated voice; no quality rating collected"
+  },
+  "browser_microphone": {
+    "normal_sign_in": true,
+    "owner_reported_use": true,
+    "language_observed": "English",
+    "transcribed_message_and_assistant_reply_visible": true,
+    "webui_stt_status": 200,
+    "webui_tts_status": 200,
+    "upstream_stt_status": 200,
+    "upstream_tts_status": 200
   }
 }

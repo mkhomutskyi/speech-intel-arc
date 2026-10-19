@@ -68,11 +68,17 @@ OpenWebUI read-aloud also passed using a normal signed-in owner browser session:
 its audio element reached readyState4, played to3.96s of4.512s, with no media
 error. This checks browser delivery/playback state, not human listening quality.
 
-Browser microphone capture, subjective listening, family-user controls,
+The owner then confirmed hearing the voice and using the microphone. The
+resulting English message and assistant response were visible in the temporary
+chat. Both OpenWebUI audio routes and their upstream B50 speech/transcription
+routes returned200. This completes one owner-assisted English microphone and
+audible-playback check; no objective speech-quality score is inferred.
+
+Physical Russian/Ukrainian microphone trials, detailed voice-quality evaluation,
+family-user controls,
 simultaneous music/SFX/image/LLM contention,
 other Arc cards and an NPU deployment remain outside these checks. The
-OpenVINO-only probe is not a complete replacement API. Authenticated OpenWebUI
-microphone acceptance still needs the owner to speak. No broader guarantee is inferred.
+OpenVINO-only probe is not a complete replacement API. No broader guarantee is inferred.
 
 ## Earlier disposable-image smoke
 

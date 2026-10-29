@@ -1,6 +1,6 @@
 # Runtime choices and the Speaches question
 
-The deployed reference is a small custom FastAPI adapter, not a Speaches fork.
+The published B50 reference recipe is a small custom FastAPI adapter, not a Speaches fork.
 It exposes one OpenAI-style speech API and isolates two inference engines:
 
 | Task | Model | Current engine |
@@ -64,3 +64,18 @@ is feasible, but still needs the complete API integration, long-text/format/
 concurrency regressions, image size and memory measurements, and owner listening
 acceptance before a production switch. The experimental probe is intentionally
 separate; no all-PyTorch STT or NPU replacement is claimed here.
+
+
+## Later findings and the publication path
+
+The October 29 service-level rehearsal retained Kokoro 82M/XPU and Whisper/
+OpenVINO. Later Intel CPU and NPU experiments used separately configured
+models, runtimes and timing boundaries; they are not the GPU measurements above
+and do not establish a supported replacement for this Compose recipe.
+The OpenVINO-only Kokoro probe remains experimental: its successful calls do not
+validate a replacement API, formats, queueing, lifecycle or subjective quality.
+A separate October 25 B50 pilot observed Whisper returning text on synthetic
+silence. This API does not implement VAD or conversational turn detection.
+Validate silence handling before allowing transcripts to trigger actions.
+The af_heart asset was tested separately later; the published recipe still
+provisions and accepts only af_sky. No other voice is enabled implicitly.

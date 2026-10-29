@@ -1,4 +1,4 @@
-# Portable image validation — October19,2026
+# Portable image validation — October 19, 2026
 
 ## Fresh download and Compose acceptance
 
@@ -84,8 +84,8 @@ OpenVINO-only probe is not a complete replacement API. No broader guarantee is i
 
 The Dockerfile in this repository built successfully on a Linux Docker host
 using its published dependency sources. The Kokoro source-asserted alignment
-workaround applied and `uv pip check` passed. Observed Python3.12.15,
-Torch2.14.0+xpu, selected Intel Arc Pro B50 for both workers.
+workaround applied and `uv pip check` passed. Observed Python 3.12.15,
+Torch 2.14.0+xpu, selected Intel Arc Pro B50 for both workers.
 
 Two disposable containers ran the new image with existing pinned model files
 mounted read-only, no published host ports, a separate temporary Docker network
@@ -96,17 +96,17 @@ restarted. Candidate containers and network were removed after testing.
 |---|---|
 |TTS and STT device identity|Both identified B50|
 |Missing bearer key on public API|401, rejected|
-|WAV synthesis|325244bytes;6.775s audio; valid RIFF header|
-|MP3 synthesis|27404bytes;6.775s source audio|
-|PCM synthesis|325200bytes;6.775s audio|
+|WAV synthesis|325244bytes; 6.775s audio; valid RIFF header|
+|MP3 synthesis|27404bytes; 6.775s source audio|
+|PCM synthesis|325200bytes; 6.775s audio|
 |Empty STT language / automatic detection|Returned expected English transcript|
 |Dependency consistency|Passed|
 
 Fixed prompt: “The living room lights are on. I have set a timer for five
 minutes. Is there anything else you would like me to do?” Recognition returned
-the same sentence text. The first WAV call took5.746seconds including initial
-inference; subsequent MP3/PCM synthesis headers reported0.1645/0.1576seconds.
-Recognition wall time was0.315seconds. These are single smoke observations,
+the same sentence text. The first WAV call took5.746 seconds including initial
+inference; subsequent MP3/PCM synthesis headers reported0.1645/0.1576 seconds.
+Recognition wall time was0.315 seconds. These are single smoke observations,
 not repeated performance measurements or a new hardware comparison.
 
 CI additionally checks Python/JSON/YAML, local documentation links, credential
@@ -117,3 +117,13 @@ hardware checks.
 That earlier image smoke used explicit Docker commands and reused weights.
 The fresh-download/Compose and natural-recording checks above supersede those
 earlier packaging gaps. Neither run validates other hardware or subjective quality.
+
+
+## October 29 publication rehearsal
+
+The [dated publication check](publication-check-2026-10-29.md) reuses the pinned
+public fixtures and verifies the cache-corrected recipe on B50. Raw data, local
+addresses, temporary keys and owner recordings are excluded from this repository.
+The October 19 owner-assisted English microphone/playback acceptance remains a
+dated observation; no new physical microphone or subjective listening score is
+claimed by the publication rehearsal.

@@ -36,3 +36,11 @@ device names, prompts, recordings and API settings. Run one unscored warmup and
 then repeated identical requests. Record both wall and X-Synthesis-Seconds /
 X-Audio-Seconds headers, plus first-use behavior. The included smoke client is
 an acceptance check, not a statistically complete benchmark harness.
+
+
+A separate [October 29 publication rehearsal](publication-check-2026-10-29.md)
+records the later cache-corrected Compose candidate, real public recordings,
+and separate model initialization / first / warm HTTP timings. Do not merge
+these different prompts, dates or timing boundaries into one ranking.
+The October 19 owner-assisted English microphone/playback check is a dated
+observation in [validation](validation.md), not a new measurement here.

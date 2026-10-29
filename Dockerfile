@@ -1,6 +1,6 @@
 FROM ubuntu:26.04
 COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /bin/uv
-ENV DEBIAN_FRONTEND=noninteractive UV_PYTHON_INSTALL_DIR=/opt/python UV_LINK_MODE=copy
+ENV DEBIAN_FRONTEND=noninteractive UV_PYTHON_INSTALL_DIR=/opt/python UV_LINK_MODE=copy UV_NO_CACHE=1
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates ffmpeg espeak-ng libgomp1 libze1 libze-intel-gpu1 intel-opencl-icd && rm -rf /var/lib/apt/lists/*
 RUN uv python install 3.12 && uv venv --python 3.12 /opt/venv
 ENV PATH=/opt/venv/bin:$PATH

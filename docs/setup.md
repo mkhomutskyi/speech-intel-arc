@@ -2,7 +2,7 @@
 
 ## Tested baseline
 
-The reference implementation ran on Ubuntu26.04 in a Docker-enabled Linux guest
+The reference implementation ran on Ubuntu 26.04 in a Docker-enabled Linux guest
 with an Arc Pro B50 exposed as DRM card/render nodes. On a normal Linux host,
 no Proxmox layer is needed. A container shares its host's kernel: installing
 userspace packages in Docker does not add support for an unsupported host GPU.
@@ -13,6 +13,11 @@ Identify the GPU using `lspci -D`, `ls -l /dev/dri/by-path` and
 `stat -c '%n %g' /dev/dri/card* /dev/dri/renderD*`. Map only the intended
 card/render nodes in .env. Do not assume renderD128 or GPU0 means the B50.
 Container health responses must identify the intended card, not another iGPU.
+Set EXPECTED_GPU_NAME=B50 for this reference. On native Linux, resolve the
+selected PCI by-path symlinks to canonical device paths with readlink -f.
+If an LXC exposes character devices directly under by-path, match their major/
+minor numbers to canonical nodes instead; do not paste a colon-containing PCI
+path into the short Compose device syntax. Verify both workers after startup.
 
 Direct runtime pins observed on the working service:
 
@@ -33,6 +38,17 @@ processes even when sharing one image. The three OpenVINO packages are one ABI
 family and must be changed together. These are measured pins, not an assertion
 that the latest available packages are always compatible. requirements.txt pins
 direct application dependencies; it is not a complete transitive dependency lock.
+
+## Storage and runtime caches
+
+Allow generous build headroom; 50 GiB free is a practical recommendation for
+this recipe, not a guaranteed minimum on every Docker storage driver. The
+October 29 rehearsal reused verified model files and still needed substantial
+transient build storage. `UV_NO_CACHE=1` prevents retaining package build caches
+in the image. Runtime named cache volumes use `volume.nocopy: true`, so Docker
+does not seed them from image caches. Both corrections are part of the locally
+reviewed publication candidate; see the [rehearsal record](publication-check-2026-10-29.md).
+Do not fix low disk space by pruning shared models or unrelated images.
 
 ## Model preparation
 
@@ -60,7 +76,18 @@ needs its own device-permission validation. `XPU_DEVICE=xpu:0` and
 check defaults to Arc and can be set to B50 for a stricter local check.
 Use FP32 first; BF16 is optional and must be checked with your utterances.
 
-Run the README commands. STT loads first; the speech service waits for STT
+Run the README commands in Bash. Export your own .env before running the smoke
+client if SPEECH_API_KEY is set (`set -a; . ./.env; set +a`).
+For a custom SPEECH_DATA path, use
+`python3 scripts/download_models.py --output "$SPEECH_DATA/models"`.
+
+Run `docker compose up -d --wait --wait-timeout 300` before requesting health
+or running smoke. Compose must support both flags (`docker compose up --help`).
+The command waits for both healthchecks and returns nonzero on timeout. If it
+fails, inspect `docker compose ps -a` and `docker compose logs --tail=100 stt speech`;
+fix the cause before retrying. Do not paste keys or private logs into a public issue.
+
+STT loads first; the speech service waits for STT
 health. Initial model compilation and the first synthesis can take much longer
 than warmed measurements. Send a warmup request before measuring steady state.
 Use a new evidence directory for each smoke run, then listen to speech.wav.
@@ -76,7 +103,7 @@ do not attach untrusted containers to its network.
 
 The original B50 TTS/STT implementation and alignment workaround passed actual
 GPU generation/recognition and synthesis-format/long-utterance checks onOctober18.
-The portable October19 packaging is separately tracked in the repository's
+The portable October 19 packaging is separately tracked in the repository's
 [validation record](validation.md); static/CPU CI cannot prove fresh image builds, GPU access,
 microphone recognition or subjective voice quality. Follow its smoke procedure
 on your own host before relying on the service.
